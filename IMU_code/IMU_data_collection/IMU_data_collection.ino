@@ -14,10 +14,20 @@ uint16_t measurement_delay_us = 65535; // Delay between measurements for testing
 #define ICM_MISO 12
 #define ICM_MOSI 11
 
+const int buttonPin = 2;
+const long interval = 1000;
+
+unsigned long previousMillis = 0;
+int buttonState = 0;
+int buttonPressed = 0;
+
 void setup(void) {
+  // initialize the pushbutton pin as an input:
+  pinMode(buttonPin, INPUT);
+  
   Serial.begin(115200);
   while (!Serial)
-    delay(1000); // will pause Zero, Leonardo, etc until serial console opens
+    delay(100); // will pause Zero, Leonardo, etc until serial console opens
 
   // Try to initialize!
   if (!icm.begin_I2C()) {
@@ -26,7 +36,7 @@ void setup(void) {
 
     Serial.println("Failed to find ICM20948 chip");
     while (1) {
-      delay(100);
+      delay(1000);
     }
   }
 
@@ -45,7 +55,7 @@ void setup(void) {
   // icm.setMagDataRate(AK09916_MAG_DATARATE_10_HZ);
 }
 
-
+String dataLabelT = "TIME_STAMP";
 String dataLabel0 = "TEMPERATURE";
 String dataLabel1 = "ACCELEROMETER_X";
 String dataLabel2 = "ACCELEROMETER_Y";
@@ -57,11 +67,21 @@ String dataLabel7 = "MAGNETOMETER_X";
 String dataLabel8 = "MAGNETOMETER_Y";
 String dataLabel9 = "MAGNETOMETER_Z";
 bool printHeaders = true;
-int dataPoints = 0;
+
+unsigned long currentMillis;
 
 void loop() {
+  // read the state of the pushbutton value:
+  buttonState = digitalRead(buttonPin);
 
-  if (dataPoints < 10) {
+  if (buttonState == HIGH) {
+    Serial.print("Button pressed to start data\n");
+    buttonPressed = 1;
+    buttonState = LOW;
+    delay(250);
+  }
+  
+  while(buttonPressed == 1) {// button pressed
     //  /* Get a new normalized sensor event */
     sensors_event_t accel;
     sensors_event_t gyro;
@@ -71,6 +91,8 @@ void loop() {
   
     //print out column headers
     while(printHeaders){ //runs once
+      Serial.print(dataLabelT);
+      Serial.print(",");
       Serial.print(dataLabel0);
       Serial.print(",");
       Serial.print(dataLabel1);
@@ -91,32 +113,34 @@ void loop() {
       Serial.print(",");
       Serial.println(dataLabel9);
       printHeaders=false;
-      delay(10);
+      delay(1);
     }
+
+    currentMillis = millis();
+    Serial.print(currentMillis);
     
-    Serial.print(temp.temperature);
+    Serial.print(","); Serial.print(temp.temperature);
     
-    Serial.print(",");
-    
-    Serial.print(accel.acceleration.x);
+    Serial.print(","); Serial.print(accel.acceleration.x);
     Serial.print(","); Serial.print(accel.acceleration.y);
     Serial.print(","); Serial.print(accel.acceleration.z);
     
-    Serial.print(",");
-    Serial.print(gyro.gyro.x);
+    Serial.print(","); Serial.print(gyro.gyro.x);
     Serial.print(","); Serial.print(gyro.gyro.y);
     Serial.print(","); Serial.print(gyro.gyro.z);
     
-    Serial.print(",");
-    Serial.print(mag.magnetic.x);
+    Serial.print(","); Serial.print(mag.magnetic.x);
     Serial.print(","); Serial.print(mag.magnetic.y);
     Serial.print(","); Serial.print(mag.magnetic.z);
   
     Serial.println();
-    
-//    delayMicroseconds(measurement_delay_us);
-  
-    delay(1000);
-    dataPoints =  dataPoints + 1;
+
+    buttonState = digitalRead(buttonPin);
+    if (buttonState == HIGH) {
+      Serial.print("Button pressed to stop data\n");
+      buttonPressed = 0;
+      buttonState = LOW;
+      delay(250);
+    }
   }
 }

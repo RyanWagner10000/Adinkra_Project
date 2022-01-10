@@ -75,7 +75,6 @@ void loop() {
   buttonState = digitalRead(buttonPin);
 
   if (buttonState == HIGH) {
-    Serial.print("Button pressed to start data\n");
     buttonPressed = 1;
     buttonState = LOW;
     delay(250);
@@ -137,7 +136,6 @@ void loop() {
 
     buttonState = digitalRead(buttonPin);
     if (buttonState == HIGH) {
-      Serial.print("Button pressed to stop data\n");
       buttonPressed = 0;
       buttonState = LOW;
       delay(250);

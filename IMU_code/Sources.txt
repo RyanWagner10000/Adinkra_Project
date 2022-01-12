@@ -5,3 +5,10 @@ https://www.arduino.cc/en/pmwiki.php?n=Tutorial/Button
 https://docs.arduino.cc/built-in-examples/digital/BlinkWithoutDelay
 
 https://www.arduino.cc/reference/en/language/functions/time/millis/
+
+https://learn.adafruit.com/adafruit-feather-huzzah-esp8266/overview
+
+https://learn.adafruit.com/adafruit-pcf8523-real-time-clock/rtc-with-arduino
+
+https://docs.luxonis.com/projects/hardware/en/latest/pages/BW1098OAK.html
+

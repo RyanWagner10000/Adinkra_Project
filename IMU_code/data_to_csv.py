@@ -1,27 +1,25 @@
-import sys
+import csv
 import serial
 
-ser = serial.Serial('COM3', baudrate = 115200)
+ser = serial.Serial('COM4', baudrate = 57600, timeout = 10)
 fileName = "sensor_data.csv"
 
-samples = 10 #how many samples to collect
-print_labels = False
-line = 0 #start at 0 because our header is 0 (not real data)
+print_labels = True
 
-while line <= samples:
+f = open(fileName, "a+")
+writer = csv.writer(f, delimiter=',')
+
+while True:
     if print_labels:
-        if line==0:
-            print("Printing Column Headers")
-        else:
-            print("Line " + str(line) + ": writing...")
-    getData=str(ser.readline())
-    data=getData[2:][:-5]
-    print(data)
-
-    file = open(fileName, "a")
-    file.write(data) #write data with a newline
-    file.write("\n")
-    line = line+1
+        print_labels = False
+    else:
+        print("Line " + str(line) + ": writing...")
+    
+    s = ser.readline().decode()
+    if s != "":
+        rows = [float(x) for x in s.split(',')]
+        print(rows)
+        writer.writerow(rows)
+        f.flush()
 
 print("Data collection complete!")
-file.close()

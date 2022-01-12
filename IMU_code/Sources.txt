@@ -12,3 +12,5 @@ https://learn.adafruit.com/adafruit-pcf8523-real-time-clock/rtc-with-arduino
 
 https://docs.luxonis.com/projects/hardware/en/latest/pages/BW1098OAK.html
 
+https://www.youtube.com/watch?v=rT1CIa-ZiNo
+

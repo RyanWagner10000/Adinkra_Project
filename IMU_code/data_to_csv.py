@@ -2,24 +2,14 @@ import csv
 import serial
 
 ser = serial.Serial('COM4', baudrate = 57600, timeout = 10)
-fileName = "sensor_data.csv"
+fileName = "sensor_data2.csv"
 
 print_labels = True
 
-f = open(fileName, "a+")
-writer = csv.writer(f, delimiter=',')
-
-while True:
-    if print_labels:
-        print_labels = False
-    else:
-        print("Line " + str(line) + ": writing...")
-    
-    s = ser.readline().decode()
-    if s != "":
-        rows = [float(x) for x in s.split(',')]
-        print(rows)
-        writer.writerow(rows)
-        f.flush()
+with open(fileName, 'w+') as f:
+    while True:
+        s = ser.readline()
+        print(s)
+        print(type(s))
 
 print("Data collection complete!")

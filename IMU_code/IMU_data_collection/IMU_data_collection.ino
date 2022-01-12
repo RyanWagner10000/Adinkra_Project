@@ -19,13 +19,11 @@ int exitState = 0;
 int buttonPressed = 0;
 
 void setup(void) {
-  // initialize the pushbutton pin as an input:
+  // initialize the button pins as an input:
   pinMode(buttonPin, INPUT);
   pinMode(exitButtonPin, INPUT);
   
   Serial.begin(57600);
-  while (!Serial)
-    delay(100); // will pause Zero, Leonardo, etc until serial console opens
 
   // Try to initialize!
   if (!icm.begin_I2C()) {
@@ -34,7 +32,6 @@ void setup(void) {
   }
   if (! rtc.begin()) {
     Serial.println("Couldn't find RTC");
-    Serial.flush();
     while (1) delay(100);
   }
 
@@ -122,7 +119,10 @@ void loop() {
   } else if (exitState == HIGH) {
 //    Serial.end();
     delay(250);
-    while(1){};
+    while(1){
+      yield();
+      delay(1000);
+    }
   }
   
   while(buttonPressed == 1) {// button pressed
@@ -141,7 +141,10 @@ void loop() {
       } else if (exitState == HIGH) {
 //        Serial.end();
         delay(250);
-        while(1){};
+        while(1) {
+          yield();
+          delay(1000); 
+        }
       }
       currentMillis = millis();
     }
